@@ -8,21 +8,23 @@
 
 ## About
 
-"Handlebars.js is an extension to the [Mustache templating language](http://mustache.github.com/) created by Chris Wanstrath. Handlebars.js and Mustache are both logicless templating languages that keep the view and the code separated like we all know they should be."
+"Handlebars.js is an extension to the [Mustache templating language](http://mustache.github.com/) created by Chris Wanstrath.  
+Handlebars.js and Mustache are both logicless templating languages that keep the view and the code separated like we all know they should be."  
 
 ## Getting Started
 
-Include following into the <head> section of your Views\Shared\_Layout.cshtml (ASP.NET MVC) or MasterPage.master (ASP.NET) file
-<script type="text/javascript" src="~/Scripts/handlebars.js"></script>
+Include following into the 'head' section of your Views\Shared\_Layout.cshtml (ASP.NET MVC) or MasterPage.master (ASP.NET) file:
+
+    <script type="text/javascript" src="~/Scripts/handlebars.js"></script>
 
 Read http://handlebarsjs.com how to use Handlebars semantic templates in your Views (Pages)
 
 ## Important Notes
 
-If you want to work with precompiled templates, you don't need to ship the compiler with your deployed application (compiler is build-in into Scripts/handlebars.js file).
-Instead, you can use the smaller "runtime" build located at /Scripts/handlebars.runtime.js
-"In addition to reducing the download size, eliminating client-side compilation will significantly speed up boot time, as compilation is the most expensive part of Handlebars."
-Please read details how to precompile your Handlebars templates at http://handlebarsjs.com/precompilation.html
+If you want to work with precompiled templates, you don't need to ship the compiler with your deployed application (compiler is build-in into Scripts/handlebars.js file).  
+Instead, you can use the smaller "runtime" build located at /Scripts/handlebars.runtime.js  
+"In addition to reducing the download size, eliminating client-side compilation will significantly speed up boot time, as compilation is the most expensive part of Handlebars."  
+Please read details how to precompile your Handlebars templates at http://handlebarsjs.com/precompilation.html  
 
 ## Original Documentation text from https://raw.github.com/wycats/handlebars.js/master/README.markdown
 
