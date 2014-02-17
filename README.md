@@ -463,3 +463,6 @@ Handlebars.js is released under the MIT license.
 
 [builds-page]: http://builds.handlebarsjs.com.s3.amazonaws.com/index.html
 [generator-release]: https://github.com/walmartlabs/generator-release
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/evereq/handlebars.js.nuget/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
