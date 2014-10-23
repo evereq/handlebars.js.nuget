@@ -28,8 +28,8 @@ Please read details how to precompile your Handlebars templates at http://handle
 
 ## Original Documentation text from https://raw.github.com/wycats/handlebars.js/master/README.markdown
 
-[![Build Status](https://travis-ci.org/wycats/handlebars.js.png?branch=master)](https://travis-ci.org/wycats/handlebars.js)
-
+[![Travis Build Status](https://img.shields.io/travis/wycats/handlebars.js/master.svg)](https://travis-ci.org/wycats/handlebars.js)
+[![Selenium Test Status](https://saucelabs.com/buildstatus/handlebars)](https://saucelabs.com/u/handlebars)
 
 Handlebars.js
 =============
@@ -44,9 +44,7 @@ Checkout the official Handlebars docs site at
 
 Installing
 ----------
-Installing Handlebars is easy. Simply download the package [from the
-official site](http://handlebarsjs.com/) and add it to your web pages
-(you should usually use the most recent version).
+Installing Handlebars is easy. Simply download the package [from the official site](http://handlebarsjs.com/) or the [bower repository][bower-repo] and add it to your web pages (you should usually use the most recent version).
 
 Alternatively, if you prefer having the latest version of handlebars from
 the 'master' branch, passing builds of the 'master' branch are automatically
@@ -97,11 +95,11 @@ embedded in them, as well as the text for a link:
 
 ```js
 Handlebars.registerHelper('link_to', function() {
-  return "<a href='" + this.url + "'>" + this.body + "</a>";
+  return new Handlebars.SafeString("<a href='" + Handlebars.Utils.escapeExpression(this.url) + "'>" + Handlebars.Utils.escapeExpression(this.body) + "</a>");
 });
 
 var context = { posts: [{url: "/hello-world", body: "Hello World!"}] };
-var source = "<ul>{{#posts}}<li>{{{link_to}}}</li>{{/posts}}</ul>"
+var source = "<ul>{{#posts}}<li>{{link_to}}</li>{{/posts}}</ul>"
 
 var template = Handlebars.compile(source);
 template(context);
@@ -164,7 +162,7 @@ into the person object you could still display the company's name with
 an expression like `{{../company.name}}`, so:
 
 ```
-{{#person}}{{name}} - {{../company.name}}{{/person}}
+{{#with person}}{{name}} - {{../company.name}}{{/person}}
 ```
 
 would render:
@@ -284,6 +282,14 @@ You can also use real html comments if you want them to end up in the output.
 ```
 
 
+### Compatibility
+
+There are a few Mustache behaviors that Handlebars does not implement.
+- Handlebars deviates from Mustache slightly in that it does not perform recursive lookup by default. The compile time `compat` flag must be set to enable this functionality. Users should note that there is a performance cost for enabling this flag. The exact cost varies by template, but it's recommended that performance sensitive operations should avoid this mode and instead opt for explicit path references.
+- The optional Mustache-style lambdas are not supported. Instead Handlebars provides it's own lambda resolution that follows the behaviors of helpers.
+- Alternative delimeters are not supported.
+
+
 Precompiling Templates
 ----------------------
 
@@ -323,9 +329,8 @@ name sans the extension. These templates may be executed in the same
 manner as templates.
 
 If using the simple mode the precompiler will generate a single
-javascript method. To execute this method it must be passed to the using
-the `Handlebars.template` method and the resulting object may be as
-normal.
+javascript method. To execute this method it must be passed to
+the `Handlebars.template` method and the resulting object may be used as normal.
 
 ### Optimizations
 
@@ -353,7 +358,9 @@ Handlebars has been designed to work in any ECMAScript 3 environment. This inclu
 - IE 6+
 
 Older versions and other runtimes are likely to work but have not been formally
-tested.
+tested. The compiler requires `JSON.stringify` to be implemented natively or via a polyfill. If using the precompiler this is not necessary.
+
+[![Selenium Test Status](https://saucelabs.com/browser-matrix/handlebars.svg)](https://saucelabs.com/u/handlebars)
 
 Performance
 -----------
@@ -366,13 +373,7 @@ does have some big performance advantages. Justin Marney, a.k.a.
 [gotascii](http://github.com/gotascii), confirmed that with an
 [independent test](http://sorescode.com/2010/09/12/benchmarks.html). The
 rewritten Handlebars (current version) is faster than the old version,
-and we will have some benchmarks in the near future.
-
-
-Building
---------
-
-To build handlebars, just run `grunt build`, and the build will output to the `dist` directory.
+with many [performance tests](https://travis-ci.org/wycats/handlebars.js/builds/33392182#L538) being 5 to 7 times faster than the Mustache equivalent.
 
 
 Upgrading
@@ -382,8 +383,9 @@ See [release-notes.md](https://github.com/wycats/handlebars.js/blob/master/relea
 
 Known Issues
 ------------
-* Handlebars.js can be cryptic when there's an error while rendering.
-* Using a variable, helper, or partial named `class` causes errors in IE browsers. (Instead, use `className`)
+
+See [FAQ.md](https://github.com/wycats/handlebars.js/blob/master/FAQ.md) for known issues and common pitfalls.
+
 
 Handlebars in the Wild
 ----------------------
@@ -394,12 +396,15 @@ Handlebars in the Wild
 * [CoSchedule](http://coschedule.com) An editorial calendar for WordPress that uses Handlebars.js
 * [Ember.js](http://www.emberjs.com) makes Handlebars.js the primary way to
   structure your views, also with automatic data binding support.
+* [Ghost](https://ghost.org/) Just a blogging platform.
 * [handlebars_assets](http://github.com/leshill/handlebars_assets): A Rails Asset Pipeline gem
   from Les Hill (@leshill).
 * [handlebars-helpers](https://github.com/assemble/handlebars-helpers) is an extensive library
   with 100+ handlebars helpers.
 * [hbs](http://github.com/donpark/hbs): An Express.js view engine adapter for Handlebars.js,
   from Don Park.
+* [koa-hbs](https://github.com/jwilm/koa-hbs): [koa](https://github.com/koajs/koa) generator based
+  renderer for Handlebars.js.
 * [jblotus](http://github.com/jblotus) created [http://tryhandlebarsjs.com](http://tryhandlebarsjs.com)
   for anyone who would like to try out Handlebars.js in their browser.
 * [jQuery plugin](http://71104.github.io/jquery-handlebars/): allows you to use
@@ -412,57 +417,21 @@ Handlebars in the Wild
   templating engine, extending it with automatic data binding support.
 * [YUI](http://yuilibrary.com/yui/docs/handlebars/) implements a port of handlebars
 * [Swag](https://github.com/elving/swag) by [@elving](https://github.com/elving) is a growing collection of helpers for handlebars.js. Give your handlebars.js templates some swag son!
+* [DOMBars](https://github.com/blakeembrey/dombars) is a DOM-based templating engine built on the Handlebars parser and runtime
 
 External Resources
 ------------------
 
 * [Gist about Synchronous and asynchronous loading of external handlebars templates](https://gist.github.com/2287070)
 
-Have a project using Handlebars? Send us a [pull request](https://github.com/wycats/handlebars.js/pull/new/master)!
-
-Helping Out
------------
-
-To build Handlebars.js you'll need a few things installed.
-
-* Node.js
-* [Grunt](http://gruntjs.com/getting-started)
-
-Project dependencies may be installed via `npm install`.
-
-To build Handlebars.js from scratch, you'll want to run `grunt`
-in the root of the project. That will build Handlebars and output the
-results to the dist/ folder. To re-run tests, run `grunt test` or `npm test`.
-You can also run our set of benchmarks with `grunt bench`.
-
-If you notice any problems, please report them to the GitHub issue tracker at
-[http://github.com/wycats/handlebars.js/issues](http://github.com/wycats/handlebars.js/issues).
-Feel free to contact commondream or wycats through GitHub with any other
-questions or feature requests. To submit changes fork the project and
-send a pull request.
-
-### Releasing
-
-Handlebars utilizes the [release yeoman generator][generator-release] to perform most release tasks.
-
-A full release may be completed with the following:
-
-```
-yo release:notes patch
-yo release:release patch
-npm publish
-yo release:publish cdnjs handlebars.js dist/cdnjs/
-yo release:publish components handlebars.js dist/components/
-```
-
-After this point the handlebars site needs to be updated to point to the new version numbers.
+Have a project using Handlebars? Send us a [pull request][pull-request]!
 
 License
 -------
 Handlebars.js is released under the MIT license.
 
-[builds-page]: http://builds.handlebarsjs.com.s3.amazonaws.com/index.html
-[generator-release]: https://github.com/walmartlabs/generator-release
+[bower-repo]: https://github.com/components/handlebars.js
+[builds-page]: http://builds.handlebarsjs.com.s3.amazonaws.com/bucket-listing.html?sort=lastmod&sortdir=desc
+[pull-request]: https://github.com/wycats/handlebars.js/pull/new/master
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/evereq/handlebars.js.nuget/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
